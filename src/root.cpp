@@ -28,7 +28,9 @@ void Root::index(Context *c)
         qDebug() << body;
     } else {
         Reader reader(&port);
-        body = "Hello Cutelyst & Qt! " + QString::number(reader.pmData().stdPm25);
+        body = "Hello Cutelyst & Qt! " + QString::number(reader.pmData().stdPm1)
+               + " | " + QString::number(reader.pmData().stdPm25)
+               + " | " + QString::number(reader.pmData().stdPm10);
     }
 
     c->response()->body() = body.toUtf8();
