@@ -13,5 +13,6 @@ target_link_libraries(smogmonitor
     Cutelyst::Core
     Qt5::Core
     Qt5::Network
+    Qt5::SerialPort
 )
 

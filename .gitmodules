@@ -1,0 +1,3 @@
+[submodule "src/pmcountercli"]
+	path = src/pmcountercli
+	url = git@github.com:sierdzio/pmcountercli.git
