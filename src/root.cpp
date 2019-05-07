@@ -9,28 +9,36 @@ using namespace Cutelyst;
 
 Root::Root(QObject *parent) : Controller(parent)
 {
+    qDebug() << "Root constructor";
+    mPort.setPortName(QStringLiteral("/dev/ttyUSB0"));
+    mPort.setBaudRate(QSerialPort::Baud9600);
+    mPort.setStopBits(QSerialPort::OneStop);
+    if (mPort.open(QSerialPort::ReadOnly)) {
+        mReader = new Reader(&mPort);
+        qDebug() << "Serial port is set up";
+    } else {
+        qDebug() << "Serial port could not be opened!" << mPort.portName()
+                 << mPort.baudRate() << mPort.stopBits() << mPort.errorString();
+    }
 }
 
 Root::~Root()
 {
+    qDebug() << "Root destructor";
+    mPort.close();
 }
 
 void Root::index(Context *c)
 {
     QString body;
-
-    QSerialPort port("/dev/ttyUSB0");
-    port.setBaudRate(QSerialPort::Baud9600);
-    port.setStopBits(QSerialPort::OneStop);
-
-    if (!port.open(QSerialPort::ReadOnly)) {
-        body = "Serial port could not be opened";
-        qDebug() << body;
+    if (mPort.isOpen()) {
+        body = "Hello Cutelyst & Qt!\n"
+            + QString::number(mReader->pmData().stdPm1)
+            + " | " + QString::number(mReader->pmData().stdPm25)
+            + " | " + QString::number(mReader->pmData().stdPm10);
     } else {
-        Reader reader(&port);
-        body = "Hello Cutelyst & Qt! " + QString::number(reader.pmData().stdPm1)
-               + " | " + QString::number(reader.pmData().stdPm25)
-               + " | " + QString::number(reader.pmData().stdPm10);
+        body = "Serial port is not open. " + mPort.errorString();
+        qDebug() << body;
     }
 
     c->response()->body() = body.toUtf8();

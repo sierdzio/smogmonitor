@@ -2,6 +2,9 @@
 #define ROOT_H
 
 #include <Cutelyst/Controller>
+#include <QSerialPort>
+
+#include "pmcountercli/reader.h"
 
 using namespace Cutelyst;
 
@@ -22,6 +25,9 @@ public:
 private:
     C_ATTR(End, :ActionClass("RenderView"))
     void End(Context *c) { Q_UNUSED(c); }
+
+    QSerialPort mPort;
+    Reader *mReader = nullptr;
 };
 
 #endif //ROOT_H
