@@ -15,7 +15,8 @@ Root::Root(QObject *parent) : Controller(parent)
     mPort.setStopBits(QSerialPort::OneStop);
     if (mPort.open(QSerialPort::ReadOnly)) {
         mReader = new Reader(&mPort);
-        qDebug() << "Serial port is set up";
+        qDebug() << "Serial port is set up with timeout:" << mReader->timeout()
+                 << "[ms]";
     } else {
         qDebug() << "Serial port could not be opened!" << mPort.portName()
                  << mPort.baudRate() << mPort.stopBits() << mPort.errorString();
@@ -30,15 +31,24 @@ Root::~Root()
 
 void Root::index(Context *c)
 {
-    QString body;
+    QString body = QString::number(mReader->pmData().stdPm1)
+        + " | " + QString::number(mReader->pmData().stdPm25)
+        + " | " + QString::number(mReader->pmData().stdPm10);
+
     if (mPort.isOpen()) {
-        body = "Hello Cutelyst & Qt!\n"
-            + QString::number(mReader->pmData().stdPm1)
-            + " | " + QString::number(mReader->pmData().stdPm25)
-            + " | " + QString::number(mReader->pmData().stdPm10);
+        body += br + "Port is open. Refresh the page to see updated values";
     } else {
-        body = "Serial port is not open. " + mPort.errorString();
-        qDebug() << body;
+        body += br +"Port is not open, displaying old data. New data will be "
+                "read soon";
+        if (mPort.open(QSerialPort::ReadOnly)) {
+            mReader->restart();
+        } else {
+            body += br + "Failed to restart serial port reader";
+        }
+    }
+
+    if (mPort.errorString().isEmpty() == false) {
+        body += br + "ERROR: " + mPort.errorString();
     }
 
     c->response()->body() = body.toUtf8();

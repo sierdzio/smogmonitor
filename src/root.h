@@ -28,6 +28,7 @@ private:
 
     QSerialPort mPort;
     Reader *mReader = nullptr;
+    const QString br = QStringLiteral("<br/><br/>");
 };
 
 #endif //ROOT_H
