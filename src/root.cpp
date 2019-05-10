@@ -15,6 +15,7 @@ Root::Root(QObject *parent) : Controller(parent)
     mPort.setStopBits(QSerialPort::OneStop);
     if (mPort.open(QSerialPort::ReadOnly)) {
         mReader = new Reader(&mPort);
+        mReader->setAverageResults(true);
         qDebug() << "Serial port is set up with timeout:" << mReader->timeout()
                  << "[ms]";
     } else {
