@@ -52,7 +52,12 @@ void Root::index(Context *c)
         body += br + "ERROR: " + mPort.errorString();
     }
 
-    c->response()->body() = body.toUtf8();
+//    c->response()->body() = body.toUtf8();
+    c->setStash("template", "src/root.html");
+    c->setStash("stdPm1", QString::number(mReader->pmData().stdPm1));
+    c->setStash("stdPm25", QString::number(mReader->pmData().stdPm25));
+    c->setStash("stdPm10", QString::number(mReader->pmData().stdPm10));
+    c->setStash("error", mPort.errorString());
 }
 
 void Root::defaultPage(Context *c)

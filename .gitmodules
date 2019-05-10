@@ -1,3 +1,6 @@
 [submodule "src/pmcountercli"]
 	path = src/pmcountercli
 	url = git@github.com:sierdzio/pmcountercli.git
+[submodule "root/theme/cayman-theme"]
+	path = root/theme/cayman-theme
+	url = git@github.com:jasonlong/cayman-theme.git

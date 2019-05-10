@@ -11,6 +11,8 @@ add_library(smogmonitor SHARED ${smogmonitor_SRCS})
 # Link to Cutelyst
 target_link_libraries(smogmonitor
     Cutelyst::Core
+    Cutelyst::StaticSimple
+    Cutelyst::View::Grantlee
     Qt5::Core
     Qt5::Network
     Qt5::SerialPort
