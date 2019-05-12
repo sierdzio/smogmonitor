@@ -29,6 +29,7 @@ private:
     QSerialPort mPort;
     Reader *mReader = nullptr;
     const QString br = QStringLiteral("<br/><br/>");
+    const QString mPortName = QStringLiteral("/dev/ttyUSB0");
 };
 
 #endif //ROOT_H

@@ -10,7 +10,7 @@ using namespace Cutelyst;
 Root::Root(QObject *parent) : Controller(parent)
 {
     qDebug() << "Root constructor";
-    mPort.setPortName(QStringLiteral("/dev/ttyUSB0"));
+    mPort.setPortName(mPortName);
     mPort.setBaudRate(QSerialPort::Baud9600);
     mPort.setStopBits(QSerialPort::OneStop);
     if (mPort.open(QSerialPort::ReadOnly)) {
@@ -56,12 +56,18 @@ void Root::index(Context *c)
     const quint16 pm25 = mReader? mReader->pmData().stdPm25 : 0;
     const quint16 pm10 = mReader? mReader->pmData().stdPm10 : 0;
 
+    const QString errorString(mPort.isOpen()? mPort.errorString()
+        : tr("Serial port is not open. Is port \"%1\" correct? Is the device "
+             "connected?").arg(mPortName));
+    const bool isError = (mPort.isOpen() == false
+                          || mPort.error() != QSerialPort::NoError);
+
     c->setStash("template", "src/root.html");
     c->setStash("stdPm1", QString::number(pm1));
     c->setStash("stdPm25", QString::number(pm25));
     c->setStash("stdPm10", QString::number(pm10));
-    c->setStash("error", mPort.errorString());
-    c->setStash("isError", (mPort.error() == QSerialPort::NoError));
+    c->setStash("error", errorString);
+    c->setStash("isError", QString::number(isError));
 }
 
 void Root::defaultPage(Context *c)
