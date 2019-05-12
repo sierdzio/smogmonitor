@@ -32,32 +32,36 @@ Root::~Root()
 
 void Root::index(Context *c)
 {
-    QString body = QString::number(mReader->pmData().stdPm1)
-        + " | " + QString::number(mReader->pmData().stdPm25)
-        + " | " + QString::number(mReader->pmData().stdPm10);
+    //QString body = QString::number(mReader->pmData().stdPm1)
+    //    + " | " + QString::number(mReader->pmData().stdPm25)
+    //    + " | " + QString::number(mReader->pmData().stdPm10);
 
-    if (mPort.isOpen()) {
-        body += br + "Port is open. Refresh the page to see updated values";
-    } else {
-        body += br +"Port is not open, displaying old data. New data will be "
-                "read soon";
-        if (mPort.open(QSerialPort::ReadOnly)) {
-            mReader->restart();
-        } else {
-            body += br + "Failed to restart serial port reader";
-        }
-    }
+    //if (mPort.isOpen()) {
+    //    body += br + "Port is open. Refresh the page to see updated values";
+    //} else {
+    //    body += br +"Port is not open, displaying old data. New data will be "
+    //            "read soon";
+    //    if (mPort.open(QSerialPort::ReadOnly)) {
+    //        mReader->restart();
+    //    } else {
+    //        body += br + "Failed to restart serial port reader";
+    //    }
+    //}
 
-    if (mPort.errorString().isEmpty() == false) {
-        body += br + "ERROR: " + mPort.errorString();
-    }
+    //if (mPort.error() == QSerialPort::NoError) {
+    //    body += br + "ERROR: " + mPort.errorString();
+    //}
 
-//    c->response()->body() = body.toUtf8();
+    const quint16 pm1 = mReader? mReader->pmData().stdPm1 : 0;
+    const quint16 pm25 = mReader? mReader->pmData().stdPm25 : 0;
+    const quint16 pm10 = mReader? mReader->pmData().stdPm10 : 0;
+
     c->setStash("template", "src/root.html");
-    c->setStash("stdPm1", QString::number(mReader->pmData().stdPm1));
-    c->setStash("stdPm25", QString::number(mReader->pmData().stdPm25));
-    c->setStash("stdPm10", QString::number(mReader->pmData().stdPm10));
+    c->setStash("stdPm1", QString::number(pm1));
+    c->setStash("stdPm25", QString::number(pm25));
+    c->setStash("stdPm10", QString::number(pm10));
     c->setStash("error", mPort.errorString());
+    c->setStash("isError", (mPort.error() == QSerialPort::NoError));
 }
 
 void Root::defaultPage(Context *c)
