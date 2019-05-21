@@ -13,12 +13,27 @@
     <section class="page-header">
       <h1 class="project-name">Smog monitor</h1>
       <h2 class="project-tagline">PM smog detector</h2>
-      <a class="btn">PM 1.0: {{ stdPm1 }}</a>
-      <a class="btn">PM 2.5: {{ stdPm25 }}</a>
-      <a class="btn">PM 10: {{ stdPm10 }}</a>
+      <a href="/WakeUp" class="btn">Wake up</a>
+      <a href="/Sleep" class="btn">Sleep</a>
+      <a href="/MakeActive" class="btn">Make active</a>
+      <a href="/MakePassive" class="btn">Make passive</a>
     </section>
 
     <section class="main-content">
+
+      <p>
+      Current status: {{ status }}
+      </p>
+
+      <p>
+        <a href="/RequestData" class="btn">Request data</a>
+      </p>
+
+      <p>
+      <a class="btn">PM 1.0: {{ stdPm1 }}</a>
+      <a class="btn">PM 2.5: {{ stdPm25 }}</a>
+      <a class="btn">PM 10: {{ stdPm10 }}</a>
+      </p>
 
       {% if isError == "1" %}
           <p>{{ error }}</p>

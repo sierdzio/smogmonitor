@@ -17,7 +17,7 @@ public:
     ~Root();
 
     C_ATTR(index, :Path :AutoArgs)
-    void index(Context *c);
+    void index(Context *c, const QString &buttonName);
 
     C_ATTR(defaultPage, :Path)
     void defaultPage(Context *c);

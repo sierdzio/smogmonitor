@@ -30,27 +30,16 @@ Root::~Root()
     mPort.close();
 }
 
-void Root::index(Context *c)
+void Root::index(Context *c, const QString &buttonName)
 {
-    //QString body = QString::number(mReader->pmData().stdPm1)
-    //    + " | " + QString::number(mReader->pmData().stdPm25)
-    //    + " | " + QString::number(mReader->pmData().stdPm10);
+    bool ok = false;
+    const Reader::CommandType commandType = Reader::CommandType(
+        QMetaEnum::fromType<Reader::CommandType>()
+            .keyToValue(buttonName.toLatin1().constData(), &ok)
+        );
 
-    //if (mPort.isOpen()) {
-    //    body += br + "Port is open. Refresh the page to see updated values";
-    //} else {
-    //    body += br +"Port is not open, displaying old data. New data will be "
-    //            "read soon";
-    //    if (mPort.open(QSerialPort::ReadOnly)) {
-    //        mReader->restart();
-    //    } else {
-    //        body += br + "Failed to restart serial port reader";
-    //    }
-    //}
-
-    //if (mPort.error() == QSerialPort::NoError) {
-    //    body += br + "ERROR: " + mPort.errorString();
-    //}
+    qDebug() << "Index called with argument:" << buttonName
+             << commandType;
 
     const quint16 pm1 = mReader? mReader->pmData().stdPm1 : 0;
     const quint16 pm25 = mReader? mReader->pmData().stdPm25 : 0;
@@ -63,11 +52,20 @@ void Root::index(Context *c)
                           || mPort.error() != QSerialPort::NoError);
 
     c->setStash("template", "src/root.html");
+
     c->setStash("stdPm1", QString::number(pm1));
     c->setStash("stdPm25", QString::number(pm25));
     c->setStash("stdPm10", QString::number(pm10));
+
+    c->setStash("status", mReader? mReader->status() : "");
+
     c->setStash("error", errorString);
     c->setStash("isError", QString::number(isError));
+
+    if (mReader && ok && commandType) {
+        // TODO: invoke method asynchronously!
+        mReader->executeCommand(commandType);
+    }
 }
 
 void Root::defaultPage(Context *c)
