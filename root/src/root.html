@@ -26,13 +26,15 @@
       </p>
 
       <p>
-        <a href="/RequestData" class="btn">Request data</a>
+        Request data:<br/>
+        <a href="/RequestData">Request data</a>
       </p>
 
       <p>
-      <a class="btn">PM 1.0: {{ stdPm1 }}</a>
-      <a class="btn">PM 2.5: {{ stdPm25 }}</a>
-      <a class="btn">PM 10: {{ stdPm10 }}</a>
+      Readings:<br/>
+      PM 1.0: {{ stdPm1 }}<br/>
+      PM 2.5: {{ stdPm25 }}<br/>
+      PM 10: {{ stdPm10 }}<br/>
       </p>
 
       {% if isError == "1" %}

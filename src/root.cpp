@@ -45,11 +45,10 @@ void Root::index(Context *c, const QString &buttonName)
     const quint16 pm25 = mReader? mReader->pmData().stdPm25 : 0;
     const quint16 pm10 = mReader? mReader->pmData().stdPm10 : 0;
 
-    const QString errorString(mPort.isOpen()? mPort.errorString()
-        : tr("Serial port is not open. Is port \"%1\" correct? Is the device "
-             "connected?").arg(mPortName));
     const bool isError = (mPort.isOpen() == false
                           || mPort.error() != QSerialPort::NoError);
+    const QString errorString(isError?
+        mPort.errorString() : tr("Serial port open. %1").arg(mPortName));
 
     c->setStash("template", "src/root.html");
 
@@ -62,7 +61,7 @@ void Root::index(Context *c, const QString &buttonName)
     c->setStash("error", errorString);
     c->setStash("isError", QString::number(isError));
 
-    if (mReader && ok && commandType) {
+    if (mReader && ok && (int(commandType) >= 0)) {
         // TODO: invoke method asynchronously!
         mReader->executeCommand(commandType);
     }
