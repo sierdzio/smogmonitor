@@ -3,6 +3,7 @@
 
 #include <Cutelyst/Controller>
 #include <QSerialPort>
+#include <QPointer>
 
 #include "pmcountercli/reader.h"
 
@@ -12,6 +13,7 @@ class Root : public Controller
 {
     Q_OBJECT
     C_NAMESPACE("")
+
 public:
     explicit Root(QObject *parent = nullptr);
     ~Root();
@@ -26,8 +28,7 @@ private:
     C_ATTR(End, :ActionClass("RenderView"))
     void End(Context *c) { Q_UNUSED(c); }
 
-    QSerialPort mPort;
-    Reader *mReader = nullptr;
+    QPointer<Pms7003Reader> mReader;
     const QString br = QStringLiteral("<br/><br/>");
     const QString mPortName = QStringLiteral("/dev/ttyUSB0");
 };

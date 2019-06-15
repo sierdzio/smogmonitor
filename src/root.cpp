@@ -10,31 +10,24 @@ using namespace Cutelyst;
 Root::Root(QObject *parent) : Controller(parent)
 {
     qDebug() << "Root constructor";
-    mPort.setPortName(mPortName);
-    mPort.setBaudRate(QSerialPort::Baud9600);
-    mPort.setStopBits(QSerialPort::OneStop);
-    if (mPort.open(QSerialPort::ReadOnly)) {
-        mReader = new Reader(&mPort);
+    mReader = new Pms7003Reader(mPortName, this);
+    if (mReader->isPortOpen()) {
         mReader->setAverageResults(true);
-        qDebug() << "Serial port is set up with timeout:" << mReader->timeout()
-                 << "[ms]";
     } else {
-        qDebug() << "Serial port could not be opened!" << mPort.portName()
-                 << mPort.baudRate() << mPort.stopBits() << mPort.errorString();
+        delete mReader;
     }
 }
 
 Root::~Root()
 {
-    qDebug() << "Root destructor";
-    mPort.close();
+    qDebug() << "Root destructor";    
 }
 
 void Root::index(Context *c, const QString &buttonName)
 {
     bool ok = false;
-    const Reader::CommandType commandType = Reader::CommandType(
-        QMetaEnum::fromType<Reader::CommandType>()
+    const Pms7003Reader::CommandType commandType = Pms7003Reader::CommandType(
+        QMetaEnum::fromType<Pms7003Reader::CommandType>()
             .keyToValue(buttonName.toLatin1().constData(), &ok)
         );
 
@@ -45,10 +38,10 @@ void Root::index(Context *c, const QString &buttonName)
     const quint16 pm25 = mReader? mReader->pmData().stdPm25 : 0;
     const quint16 pm10 = mReader? mReader->pmData().stdPm10 : 0;
 
-    const bool isError = (mPort.isOpen() == false
-                          || mPort.error() != QSerialPort::NoError);
+    const bool isError = (mReader->isPortOpen() == false
+                          or mReader->portError() != QSerialPort::NoError);
     const QString errorString(isError?
-        mPort.errorString() : tr("Serial port open. %1").arg(mPortName));
+        mReader->portErrorString() : tr("Serial port open. %1").arg(mPortName));
 
     c->setStash("template", "src/root.html");
 
