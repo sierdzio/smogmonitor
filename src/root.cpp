@@ -1,5 +1,5 @@
 #include "root.h"
-#include "pmcountercli/reader.h"
+#include "pmcountercli/pms7003reader.h"
 
 #include <QString>
 #include <QSerialPort>

@@ -1,13 +1,12 @@
-#ifndef ROOT_H
-#define ROOT_H
+#pragma once
 
 #include <Cutelyst/Controller>
 #include <QSerialPort>
 #include <QPointer>
 
-#include "pmcountercli/reader.h"
-
 using namespace Cutelyst;
+
+class Pms7003Reader;
 
 class Root : public Controller
 {
@@ -32,6 +31,3 @@ private:
     const QString br = QStringLiteral("<br/><br/>");
     const QString mPortName = QStringLiteral("/dev/ttyUSB0");
 };
-
-#endif //ROOT_H
-

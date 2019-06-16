@@ -1,5 +1,4 @@
-#ifndef SMOGMONITOR_H
-#define SMOGMONITOR_H
+#pragma once
 
 #include <Cutelyst/Application>
 
@@ -15,6 +14,3 @@ public:
 
     bool init();
 };
-
-#endif //SMOGMONITOR_H
-
